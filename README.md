@@ -25,4 +25,46 @@
 ![Снимок экрана 2025-04-26 182120](https://github.com/user-attachments/assets/456e738e-7ee3-4882-a9da-b4e784922c15)
 
 ### 🖼️ Работа с изображениями
+Для обработки нажатия левой кнопкой мыши по изображению (кроме изображения пустой кувшинки) написан обработчик собыия **PictureBox_Click**, который внутри содержит метод **Swap**, реализующий _"прыжок"_ лягушки, и метод **CheckWinning**, проверяющий, выполняется ли условие победы:
 
+```C#
+private void PictureBox_Click(object sender, EventArgs e)
+{
+    Swap((PictureBox)sender);
+    CheckWinning();
+}
+
+private void Swap(PictureBox clickedPicture)
+{
+    var distance = Math.Abs(clickedPicture.Location.X - emptyPictureBox.Location.X) / emptyPictureBox.Size.Width;
+
+    if (distance > 2)
+    {
+        MessageBox.Show("Невозможный ход!");
+        return;
+    }
+
+    (emptyPictureBox.Location, clickedPicture.Location) = (clickedPicture.Location, emptyPictureBox.Location);
+    countMoves++;
+    countMovesLabel.Text = countMoves.ToString();
+}
+
+private void CheckWinning()
+{
+    if(Iswin())
+    {
+        if (countMoves == minimumMoves)
+        {
+            MessageBox.Show("Поздравляю! Вы выиграли!", "Конец Игры");
+        }
+        else
+        {
+            var result = MessageBox.Show("Вы справились не за оптимальное количество ходов. Хотите начать заново?", "Конец Игры", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            { 
+                Application.Restart();
+            }
+        }
+    }
+}
+```
